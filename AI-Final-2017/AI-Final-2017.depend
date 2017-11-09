@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1509811541 source:e:\dropbox\ai - uet\ai-final-2017\ai-final-2017\testtpoint.cpp
+	<bits/stdc++.h>
+	<TPoint.h>
+
+1510132932 source:e:\dropbox\ai - uet\ai-final-2017\ai-final-2017\testpolygon.cpp
+	<bits/stdc++.h>
+	<Polygon.h>
+
