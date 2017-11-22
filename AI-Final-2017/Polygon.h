@@ -1,6 +1,7 @@
 #ifndef POLYGON_H_INCLUDED
 #define POLYGON_H_INCLUDED
 #include<TPoint.h>
+
 const int MAX_POINT = 17;
 
 class Polygon{
@@ -27,7 +28,11 @@ void Polygon::calculateAllAngles(){
 }
 
 void Polygon::rotatePolygon(){
-
+    for (int i = 0; i < numberOfPoints; i++){
+        int newX = points[i].y;
+        int newY = -points[i].x;
+        points[i] = TPoint(newX, newY);
+    }
 }
 
 #endif // POLYGON_H_INCLUDED

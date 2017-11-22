@@ -26,6 +26,14 @@ int main(){
             cout << p.angles[j] << ' ';
         cout << '\n';
 
+        for (int k = 0; k < 4; k++){
+            p.rotatePolygon();
+            for (int j = 0; j < p.numberOfPoints; j++){
+                cout << p.points[j].x << ' ' << p.points[j].y << ' ';
+            }
+
+            cout << '\n';
+        }
     }
 
     return 0;
