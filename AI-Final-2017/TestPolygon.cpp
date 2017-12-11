@@ -2,7 +2,7 @@ using namespace std;
 #include<bits/stdc++.h>
 #include<Polygon.h>
 
-int main(){
+/*int main(){
 #ifndef ONLINE_JUDGE
     freopen("sample_input.inp", "r", stdin);
 #endif // ONLINE_JUDGE
@@ -38,3 +38,4 @@ int main(){
 
     return 0;
 }
+*/

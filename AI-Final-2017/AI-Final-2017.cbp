@@ -31,11 +31,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Frame.h" />
 		<Unit filename="Polygon.h" />
 		<Unit filename="TPoint.h" />
+		<Unit filename="TestFrame.cpp" />
 		<Unit filename="TestPolygon.cpp" />
 		<Unit filename="TestTPoint.cpp" />
 		<Unit filename="sample_input.inp" />
+		<Unit filename="solver_dummy.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

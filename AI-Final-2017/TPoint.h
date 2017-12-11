@@ -3,8 +3,8 @@
 
 typedef long long LL;
 struct TPoint{
-    LL x,y;
-    TPoint(LL a = 0,LL b = 0) : x(a),y(b){};
+    int x,y;
+    TPoint(int a = 0,int b = 0) : x(a),y(b){};
     bool operator <(const TPoint &b)const{
         return (x != b.x ? x<b.x : y<b.y);
     }
@@ -18,7 +18,7 @@ inline TPoint operator-(TPoint a, TPoint b){
     return TPoint(a.x-b.x,a.y-b.y);
 }
 
-inline LL operator*(TPoint a, TPoint b){
+inline int operator*(TPoint a, TPoint b){
     return a.x*b.x + a.y*b.y;
 }
 
@@ -26,13 +26,17 @@ inline TPoint operator*(LL k, TPoint a){
     return TPoint(k*a.x,k*a.y);
 }
 
-inline LL operator^(TPoint a, TPoint b){
+inline int operator^(TPoint a, TPoint b){
     return a.x*b.y - a.y*b.x;
 }
 
 
-inline LL dis(TPoint a,TPoint b){//binh phuong khoang cach
-    return 1LL*(a.x-b.x)*(a.x-b.x)+1LL*(a.y-b.y)*(a.y-b.y);
+inline int dis(TPoint a,TPoint b){//binh phuong khoang cach
+    return (a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y);
+}
+
+inline int mandis(TPoint a, TPoint b){ //khoang cach manhattan giua 2 diem
+    return abs(a.x-b.x) + abs(a.y-b.y);
 }
 
 inline int ccw(TPoint a,TPoint b,TPoint c){//chieu di quanh bien
