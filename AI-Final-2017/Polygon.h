@@ -21,17 +21,45 @@ public:
     void rotatePolygon(); ///xoay da giac theo 1 goc 90?
     void flipPolygon(); ///lat hinh doi xung qua truc tung
     vector< pair<int, int> > whereToPut(Polygon a); ///cac diem co the dung de dat 2 hinh canh nhau
-
+    int isPointInsidePolygon(TPoint p); ///kiem tra 1 diem co nam trong da giac hay ko
     void assignValue(Polygon *a); ///gan toa do cac diem cua mieng hien tai cho mieng a
 };
 
 inline void Polygon::init(){
     minX = minY = int(1e9);
     maxX = maxY = 0;
-    for (int i = 0; i < numberOfPoints; i++){}
+    for (int i = 0; i < numberOfPoints; i++){
+        minX = min(minX, points[i].x);
+        minY = min(minY, points[i].y);
+        maxX = max(maxX, points[i].x);
+        maxY = max(maxY, points[i].y);
+    }
 
-    calculateAllAngles();
-    calculateAllSegments();
+  //  calculateAllAngles();
+    //calculateAllSegments();
+}
+
+inline int Polygon::isPointInsidePolygon(TPoint p){
+ // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+    bool inside = false;
+
+    for (int i = 0; i < numberOfPoints; i++){
+        if (ccw(p, points[i], points[(i+1) % numberOfPoints]) == 0  && sqrt(dis(p, points[i])) + sqrt(dis(p, points[(i+1)%numberOfPoints])) == sqrt(dis(points[i], points[(i+1)%numberOfPoints]))){
+            //cerr << p.x << ',' << p.y << ' ' << points[i].x << ',' << points[i].y << ' ' << points[i+1].x << ',' << points[i+1].y << endl;
+             return 1; ///diem nam tren bien
+        }
+    }
+
+    for ( int i = 0, j = numberOfPoints - 1 ; i < numberOfPoints ; j = i++ ){
+        if ( ( points[ i ].y > p.y ) != ( points[ j ].y > p.y ) &&
+             p.x < ( points[ j ].x - points[ i ].x ) * ( p.y - points[ i ].y ) / ( points[ j ].y - points[ i ].y )
+                    + points[ i ].x ) {
+            inside = !inside;
+        }
+    }
+
+
+    return inside ? 0 : -1; ///diem nam trong -> 0, diem nam ngoai -> -1
 }
 
 inline void Polygon::assignValue(Polygon *a){

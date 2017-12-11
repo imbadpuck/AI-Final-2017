@@ -25,6 +25,8 @@ void input(){
         }
 
         pieces[i].init();
+        pieces[i].calculateAllAngles();
+        pieces[i].calculateAllSegments();
     //    cout << '\n';
     //    for (int j = 0; j < pieces[i].numberOfPoints; j++)
     //        cout << pieces[i].angles[j] << ' ';
@@ -43,6 +45,15 @@ void input(){
       //  cout << frame.borders[i].x << ' ' << frame.borders[i].y << ' ';
     }
     frame.init();
+    cout << endl;
+
+/*    for (int j = frame.minY; j <= frame.maxY; j++){
+        for (int i = frame.minX; i <= frame.maxX; i++)
+            cout << frame.grid[j][i] << ' ';
+        cout << endl;
+    }*/
+
+
     //cout << '\n';
 }
 
@@ -94,6 +105,8 @@ void tryToFillFrame(int u, int stPoint, TPoint p){///dat hinh u
         visit[u] = false;
         return;
     }
+
+    ///thieu xoay hinh
   //  cerr << u << ' ' << g[u].size() << endl;
 
     bool foundNewPoint = false;
@@ -112,15 +125,15 @@ void tryToFillFrame(int u, int stPoint, TPoint p){///dat hinh u
     if (!foundNewPoint){
         int covered = frame.howMuchCovered();
         if (covered > bestCover){
-            cerr << "OK";
+           // cerr << "OK";
             for (int i = 0; i < numberOfPieces; i++){
                 pieces[i].assignValue(&finalResult[i]);
             }
         }
     }
 
-    //visit[u] = false;
-   // frame.reverseFrameState(pieces[u], stPoint, p);
+    visit[u] = false;
+    frame.reverseFrameState(pieces[u]);
 }
 
 void initValue(){
