@@ -23,7 +23,9 @@ public:
     vector< pair<int, int> > whereToPut(Polygon a); ///cac diem co the dung de dat 2 hinh canh nhau
     int isPointInsidePolygon(TPoint p); ///kiem tra 1 diem co nam trong da giac hay ko
     void assignValue(Polygon *a); ///gan toa do cac diem cua mieng hien tai cho mieng a
+    bool cmpA(TPoint a, TPoint b);
 };
+
 
 inline void Polygon::init(){
     minX = minY = int(1e9);
@@ -33,16 +35,21 @@ inline void Polygon::init(){
         minY = min(minY, points[i].y);
         maxX = max(maxX, points[i].x);
         maxY = max(maxY, points[i].y);
+  //      boost::geometry::append(poly, point(points[i].x, points[i].y));
     }
+
+    //sort(points, points+numberOfPoints, Polygon::cmpA);
+    // boost::geometry::for_each_point(poly, list_coordinates<point>);
 
   //  calculateAllAngles();
     //calculateAllSegments();
 }
 
+
+
+
 inline int Polygon::isPointInsidePolygon(TPoint p){
  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-    bool inside = false;
-
     for (int i = 0; i < numberOfPoints; i++){
         if (ccw(p, points[i], points[(i+1) % numberOfPoints]) == 0  && sqrt(dis(p, points[i])) + sqrt(dis(p, points[(i+1)%numberOfPoints])) == sqrt(dis(points[i], points[(i+1)%numberOfPoints]))){
             //cerr << p.x << ',' << p.y << ' ' << points[i].x << ',' << points[i].y << ' ' << points[i+1].x << ',' << points[i+1].y << endl;
@@ -50,16 +57,17 @@ inline int Polygon::isPointInsidePolygon(TPoint p){
         }
     }
 
+    bool inside = false;
     for ( int i = 0, j = numberOfPoints - 1 ; i < numberOfPoints ; j = i++ ){
         if ( ( points[ i ].y > p.y ) != ( points[ j ].y > p.y ) &&
-             p.x < ( points[ j ].x - points[ i ].x ) * ( p.y - points[ i ].y ) / ( points[ j ].y - points[ i ].y )
-                    + points[ i ].x ) {
+             double(p.x) < double( points[ j ].x - points[ i ].x ) * double( p.y - points[ i ].y ) / double( points[ j ].y - points[ i ].y )
+                    + double(points[ i ].x )) {
             inside = !inside;
         }
     }
 
-
-    return inside ? 0 : -1; ///diem nam trong -> 0, diem nam ngoai -> -1
+    return inside ? 0 : -1;
+   // return (cn&1) ? 0 : -1; ///diem nam trong -> 0, diem nam ngoai -> -1
 }
 
 inline void Polygon::assignValue(Polygon *a){
@@ -116,15 +124,16 @@ inline vector< pair<int, int> > Polygon::whereToPut(Polygon a){
         for (int j = 0; j < a.numberOfPoints; j++){
             double sumAngles = angles[i] + a.angles[j];
             if ((sumAngles <= 360.0+eps && sumAngles >= 360.0-eps) || (sumAngles <= 180.0+eps && sumAngles >= 180.0-eps))
-                ans.push_back(make_pair(i,j));
+                ans.push_back(make_pair((i+1) % numberOfPoints, (j+1) % a.numberOfPoints));
         }
     }
 
     ///check 2 doan thang co cung do dai euclid & do dai manhattan
-    int numberOfSegments = numberOfPoints-1;
-    for (int i = 0; i < numberOfSegments; i++){
-        for (int j = 0; j < a.numberOfPoints-1; j++){
+    //int numberOfSegments = numberOfPoints;
+    for (int i = 0; i < numberOfPoints; i++){
+        for (int j = 0; j < a.numberOfPoints; j++){
             if (euclideanDistance[i] == a.euclideanDistance[j] && manhattanDistance[i] == a.manhattanDistance[j])
+                ans.push_back(make_pair((i+1) % numberOfPoints,j));
                 ans.push_back(make_pair(i,j));
         }
     }

@@ -45,8 +45,8 @@ inline int ccw(TPoint a,TPoint b,TPoint c){//chieu di quanh bien
 }
 
 inline double angle(TPoint a, TPoint b, TPoint c){
-    double dot = (c-b)*(a-b);
-    double det = (c-b)^(a-b);
+    double dot = (c-b)*(b-a);
+    double det = (c-b)^(b-a);
     double PI = 3.14159265;
     double ans = atan2(det, dot);
 

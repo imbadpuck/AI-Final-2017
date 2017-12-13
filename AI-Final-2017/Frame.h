@@ -22,7 +22,7 @@ public:
 
     void init();
     bool insideFrame(TPoint p); ///kiem tra xem diem co nam trong khung ko
-    bool placePieceIntoFrame(Polygon &po, int stPoint, TPoint p); ///dat mot mieng vao trong khung tai diem p
+    int placePieceIntoFrame(Polygon &po, int stPoint, TPoint p); ///dat mot mieng vao trong khung tai diem p
     void reverseFrameState(Polygon po); ///khoi phuc trang thai cua bang ve trang thai truoc khi dat hinh vao khung
 
     int howMuchCovered(); ///frame da duoc covered bao nhieu
@@ -48,6 +48,7 @@ void Frame::init(){
         minY = min(minY, borders[i].y);
         maxY = max(maxY, borders[i].y);
         grid[ borders[i].y ][ borders[i].x ] = 1;
+        piecesOccupied[ borders[i].y ][ borders[i].x ]++;
         //cout << borders[i].y << ' ' << borders[i].x << ' ' <<  grid[ borders[i].y ][ borders[i].x ] << endl;
     }
 
@@ -64,20 +65,23 @@ void Frame::init(){
             int isInside = p.isPointInsidePolygon(TPoint(i, j));
             if (grid[j][i] == -1){
                 grid[j][i] = isInside;
+                if (isInside == 1){
+                    piecesOccupied[ borders[i].y ][ borders[i].x ]++;
+                }
             }
            // else grid[j][i] = 2;
         }
 }
 
 
-bool Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
+int Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
     int stX = p.x;
     int stY = p.y;
     int disX, disY; ///khoang cach Manhattan giua toa do 2 diem trong da giac
     //grid[ stY ][ stX ] = 1;
  //   cerr << stX << ' ' << stY << endl;
 
-    bool isAvailable = true;
+    int isAvailable = 1;
     for (int i = stPoint; i < stPoint + po.numberOfPoints; i++){
         //cerr << (i+1) % po.numberOfPoints << ' ' << i % po.numberOfPoints << endl;
         disX = po.points[(i+1) % po.numberOfPoints].x - po.points[i % po.numberOfPoints].x;
@@ -85,12 +89,12 @@ bool Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
         po.points[i % po.numberOfPoints] = TPoint(stX, stY);
        // cerr << i-1 << ' ' << stX << ' ' << stY << endl;
         if (!insideFrame(TPoint(stX, stY))){
-            isAvailable = false;
+            isAvailable = -1;
          //   cerr << "sai tai day: " << ' ' << stX << ' ' << stY << endl;
         } else {
           //  cerr << stX << ' ' << stY << endl;
             if (grid[ stY ][ stX ] == 2){
-                isAvailable = false;
+                isAvailable = min(isAvailable, 0);
             }
         }
         stX += disX;
@@ -100,8 +104,8 @@ bool Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
 
 ///    0 1 2 3 4 5.0 6.1 7.2 8.3
 
-    if (!isAvailable)
-        return false;
+    if (isAvailable <= 0)
+        return isAvailable;
 
    /* for (int i = 0; i < po.numberOfPoints; i++){
         stX = po.points[i].x;
@@ -130,18 +134,19 @@ bool Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
                 hasOccupied.push_back(TPoint(i,j));
             } else pass = false;
             if (!pass){
+                cerr << "Sai tai day " << j << ' ' << i << ' ' << isInside << ' ' << grid[j][i] << endl;
                 for (vector<TPoint>::iterator it=hasOccupied.begin(); it != hasOccupied.end(); it++){
                     int x = it->x;
                     int y = it->y;
                     piecesOccupied[y][x]--;
                     if (!piecesOccupied[y][x]) grid[y][x] = 0;
                 }
-                return false;
+                return 0;
             }
         }
     }
 
-    return true;
+    return 1; ///-1 hinh tran ra ngoai, 0 hinh bi trung voi 1 hinh khac, 1 -> ok
 }
 
 void Frame::reverseFrameState(Polygon po){

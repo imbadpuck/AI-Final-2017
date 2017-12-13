@@ -45,8 +45,6 @@ void input(){
       //  cout << frame.borders[i].x << ' ' << frame.borders[i].y << ' ';
     }
     frame.init();
-    cout << endl;
-
 /*    for (int j = frame.minY; j <= frame.maxY; j++){
         for (int i = frame.minX; i <= frame.maxX; i++)
             cout << frame.grid[j][i] << ' ';
@@ -96,15 +94,20 @@ void initGraph(){ ///init g, tao cac cap hinh co the ghep cung nhau
 int bestCover;
 Polygon finalResult[MAXN];
 bool visit[MAXN];
+bool reduceState[maxRow][maxColumn][MAXN][17][8];
 
 void tryToFillFrame(int u, int stPoint, TPoint p, int putInFrame){///dat hinh u
     visit[u] = true;
     int cnt = 0;
     cerr << u << ' ' << putInFrame << endl;
     while (cnt < 8){
-        bool canBePut = frame.placePieceIntoFrame(pieces[u], stPoint, p);
-        cerr << u << ' ' << cnt << ' ' << p.x << ' ' << p.y << ' ' << canBePut << endl;
-        if (canBePut){
+        int canBePut = 1;
+        if (!reduceState[p.y][p.x][u][stPoint][cnt])
+            canBePut = frame.placePieceIntoFrame(pieces[u], stPoint, p);
+        else
+            canBePut = -1;
+        cerr << u << ' ' << cnt << ' ' << p.x << ' ' << p.y << ' ' << stPoint << ' ' << canBePut << endl;
+        if (canBePut == 1){
             bool foundNewPoint = false;
             for (vector< nextPiece >::iterator it = g[u].begin(); it != g[u].end(); it++){
                 int v = it->indexNext;
@@ -136,9 +139,13 @@ void tryToFillFrame(int u, int stPoint, TPoint p, int putInFrame){///dat hinh u
                         cout << endl;
                     }
                     bestCover = covered;
+                    exit(0);
                 }
             }
             frame.reverseFrameState(pieces[u]);
+        } else{
+            if (canBePut == -1)
+                reduceState[p.y][p.x][u][stPoint][cnt] = true;
         }
 
         cnt++;
@@ -146,6 +153,9 @@ void tryToFillFrame(int u, int stPoint, TPoint p, int putInFrame){///dat hinh u
         if (cnt == 4) pieces[u].flipPolygon();
         pieces[u].init();
     }
+
+    pieces[u].flipPolygon();
+    pieces[u].init();
 
     visit[u] = false;
 
@@ -158,11 +168,21 @@ void initValue(){
     }
 
     memset(visit, false, sizeof(visit));
+    memset(reduceState, 0, sizeof(reduceState));
 }
 
 void solver_dummy(){
     //cerr << g[0].size() << ' ';
     tryToFillFrame(0, 0, TPoint(0, 0), 1);
+   /* for (int i = 0; i < numberOfPieces; i++){
+        for (int j = 0; j < pieces[i].numberOfPoints; j++){
+            bool canBePut = frame.placePieceIntoFrame(pieces[i], j, frame.borders[0]);
+            if (canBePut){
+                frame.reverseFrameState(pieces[i]);
+                tryToFillFrame(i,j,frame.borders[0],1);
+            }
+        }
+    }*/
 
 }
 
@@ -194,24 +214,89 @@ int main(){
     initValue();
     //cerr << frame.minX << ' ' << frame.minY << ' ' << frame.maxX << ' ' << frame.maxY << endl;
     solver_dummy();
-   /* pieces[6].flipPolygon();
-    pieces[6].init();
-    bool c1 = frame.placePieceIntoFrame(pieces[6], 0, TPoint(68, 20));
-    pieces[9].rotatePolygon();
-    pieces[9].rotatePolygon();
-    pieces[9].rotatePolygon();
-    //pieces[13].flipPolygon();
-    pieces[9].init();
-    bool c2 = frame.placePieceIntoFrame(pieces[9], 0, TPoint(80, 40));
 
+  /*  bool c1 = frame.placePieceIntoFrame(pieces[0], 0, TPoint(0, 0));
+
+    bool c2 = frame.placePieceIntoFrame(pieces[1], 0, TPoint(15, 30));
+    bool c3 = frame.placePieceIntoFrame(pieces[2], 0, TPoint(0, 0));
+    bool c4 = frame.placePieceIntoFrame(pieces[3], 0, TPoint(30, 20));
+    bool c5 = frame.placePieceIntoFrame(pieces[4], 0, TPoint(40, 20));*/
+ //   cerr << pieces[2].isPointInsidePolygon(TPoint(40, 19)) << endl;
 //    cout << c1 << ' ' << c2 << endl;
+    /*for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///1;
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///2;
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///3;
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+   cerr << endl;
+    pieces[2].rotatePolygon(); ///4;
+    pieces[2].flipPolygon();
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///5;
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///6;
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///7;
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0
+    cerr << endl;
+    pieces[2].rotatePolygon(); ///8;
+    pieces[2].flipPolygon(); ///8
+    for (int i = 0; i < pieces[2].numberOfPoints; i++){
+        cerr << pieces[2].points[i].x << ' ' << pieces[2].points[i].y << " ";
+    }///0*/
+   // p2.
     for (int j = frame.minY; j <= frame.maxY; j++){
         for (int i = frame.minX; i <= frame.maxX; i++)
-            cout << frame.grid[j][i] << ' ';
+            if (frame.grid[j][i] == -1) cout << "4 ";
+            else cout << frame.grid[j][i] << ' ';
         cout << endl;
-    }*/
+    }
 
     output();
+  /*  for (int i = 0; i < numberOfPieces; i++){
+        for (vector<nextPiece>::iterator it = g[i].begin(); it != g[i].end(); it++){
+            cout << i << ' ' << it->indexNext << ' ' << it->whereThis << ' ' << it->whereThat << endl;
+        }
+    }
+
+    for (int i = 0; i < pieces[0].numberOfPoints; i++) cerr << pieces[0].angles[i] << ' '; cerr << endl;
+    for (int i = 0; i < pieces[1].numberOfPoints; i++) cerr << pieces[1].angles[i] << ' '; cerr << endl;
+    cerr << pieces[0].angles[1] + pieces[1].angles[2] << endl;*/
+ /*   Polygon po;
+    po.numberOfPoints = 4;
+    po.points[0] = TPoint(40, 20);
+    po.points[1] = TPoint(40, 30);
+    po.points[2] = TPoint(50, 30);
+    po.points[3] = TPoint(50, 0);
+    po.init();
+
+    cerr << po.isPointInsidePolygon(TPoint(40, 19));*/
+
 
     return 0;
 }
+
