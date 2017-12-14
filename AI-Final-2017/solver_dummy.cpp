@@ -180,9 +180,9 @@ void initValue(){
 void solver_dummy(){
     //cerr << g[0].size() << ' ';
     //tryToFillFrame(0, 0, TPoint(0, 0), 1);
-    //pieces[4].flipPolygon();
-   // tryToFillFrame(4, 4, TPoint(15, 9), 1);
-    for (int i = 0; i < numberOfPieces; i++){
+    pieces[4].flipPolygon();
+    tryToFillFrame(4, 4, TPoint(15, 9), 1);
+   /* for (int i = 0; i < numberOfPieces; i++){
         for (int k = 0; k < 8; k++){
             for (int j = 0; j < pieces[i].numberOfPoints; j++){
                 int canBePut = frame.placePieceIntoFrame(pieces[i], j, frame.borders[0]);
@@ -195,7 +195,7 @@ void solver_dummy(){
             if (k == 4) pieces[i].flipPolygon();
         }
         pieces[i].flipPolygon();
-    }
+    }*/
    //    pieces[0].rotatePolygon();
    // pieces[0].rotatePolygon();
   //  pieces[0].flipPolygon();
