@@ -30,9 +30,10 @@ public:
 
 bool Frame::insideFrame(TPoint p){///wrong
     if (p.x < minX || p.y < minY || p.x > maxX || p.y > maxY){
+       // cerr << "1";
         return false;
     }
-
+    //cerr << "2";
     return grid[ p.y ][ p.x ] > -1;
 }
 
@@ -90,7 +91,7 @@ int Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
        // cerr << i-1 << ' ' << stX << ' ' << stY << endl;
         if (!insideFrame(TPoint(stX, stY))){
             isAvailable = -1;
-         //   cerr << "sai tai day: " << ' ' << stX << ' ' << stY << endl;
+            //cerr << "sai tai day: " << ' ' << stX << ' ' << stY << endl;
         } else {
           //  cerr << stX << ' ' << stY << endl;
             if (grid[ stY ][ stX ] == 2){
@@ -134,7 +135,7 @@ int Frame::placePieceIntoFrame(Polygon &po, int stPoint, TPoint p){
                 hasOccupied.push_back(TPoint(i,j));
             } else pass = false;
             if (!pass){
-                cerr << "Sai tai day " << j << ' ' << i << ' ' << isInside << ' ' << grid[j][i] << endl;
+               // cerr << "Sai tai day " << j << ' ' << i << ' ' << isInside << ' ' << grid[j][i] << endl;
                 for (vector<TPoint>::iterator it=hasOccupied.begin(); it != hasOccupied.end(); it++){
                     int x = it->x;
                     int y = it->y;
